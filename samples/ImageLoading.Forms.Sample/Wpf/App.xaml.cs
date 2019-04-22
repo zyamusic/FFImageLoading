@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Wpf
+namespace WPF
 {
 	/// <summary>
 	/// Interaction logic for App.xaml

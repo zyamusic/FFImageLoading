@@ -15,18 +15,19 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>bin\Release</OutputPath>
+    <DocumentationFile>bin\Release\FFImageLoading.Forms.Platform.xml</DocumentationFile>    
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -58,16 +59,16 @@
       <Project>{0e77b5d3-dba5-46d3-af16-7c209c952bd0}</Project>
       <Name>FFImageLoading.Forms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FFImageLoading.Wpf\FFImageLoading.Wpf.csproj">
+    <ProjectReference Include="..\FFImageLoading.WPF\FFImageLoading.WPF.csproj">
       <Project>{dc06c582-6c7e-4018-a752-feb528c65f7e}</Project>
-      <Name>FFImageLoading.Wpf</Name>
+      <Name>FFImageLoading.WPF</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms">
       <Version>3.6.0.22065</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms.PLatform.WPf">
+    <PackageReference Include="Xamarin.Forms.Platform.WPF">
       <Version>3.6.0.22065</Version>
     </PackageReference>
   </ItemGroup>

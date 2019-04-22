@@ -23,10 +23,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>bin\Release</OutputPath>
+    <DocumentationFile>bin\Release\FFImageLoading.Transformations.xml</DocumentationFile>    
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -63,9 +64,9 @@
       <Project>{0ad3a755-399a-4527-a001-6192724c67bb}</Project>
       <Name>FFImageLoading</Name>
     </ProjectReference>
-    <ProjectReference Include="..\FFImageLoading.Wpf\FFImageLoading.Wpf.csproj">
+    <ProjectReference Include="..\FFImageLoading.WPF\FFImageLoading.WPF.csproj">
       <Project>{dc06c582-6c7e-4018-a752-feb528c65f7e}</Project>
-      <Name>FFImageLoading.Wpf</Name>
+      <Name>FFImageLoading.WPF</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

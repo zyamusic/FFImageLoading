@@ -130,13 +130,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFImageLoading.Mac.Sample",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFImageLoading.Forms.Sample.WinUWP", "samples\ImageLoading.Forms.Sample\WinUWP\FFImageLoading.Forms.Sample.WinUWP.csproj", "{8E16617A-EA87-4E8D-8CD1-AD5E6D73188F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFImageLoading.Forms.Wpf", "source\FFImageLoading.Forms.Wpf\FFImageLoading.Forms.Wpf.csproj", "{0AA5A427-ADC8-4685-AA8C-FEA26EBD31F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFImageLoading.Forms.WPF", "source\FFImageLoading.Forms.WPF\FFImageLoading.Forms.WPF.csproj", "{0AA5A427-ADC8-4685-AA8C-FEA26EBD31F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFImageLoading.Transformations.Wpf", "source\FFImageLoading.Transformations.Wpf\FFImageLoading.Transformations.Wpf.csproj", "{A63B1175-5FB5-4A9C-BCC5-8AC091876D04}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFImageLoading.Transformations.WPF", "source\FFImageLoading.Transformations.WPF\FFImageLoading.Transformations.WPF.csproj", "{A63B1175-5FB5-4A9C-BCC5-8AC091876D04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFImageLoading.Wpf", "source\FFImageLoading.Wpf\FFImageLoading.Wpf.csproj", "{DC06C582-6C7E-4018-A752-FEB528C65F7E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFImageLoading.WPF", "source\FFImageLoading.WPF\FFImageLoading.WPF.csproj", "{DC06C582-6C7E-4018-A752-FEB528C65F7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFImageLoading.Forms.Sample.Wpf", "samples\ImageLoading.Forms.Sample\Wpf\FFImageLoading.Forms.Sample.Wpf.csproj", "{9DA44ABC-686C-4AE5-AB3F-19C01BAC279F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFImageLoading.Forms.Sample.WPF", "samples\ImageLoading.Forms.Sample\WPF\FFImageLoading.Forms.Sample.WPF.csproj", "{9DA44ABC-686C-4AE5-AB3F-19C01BAC279F}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

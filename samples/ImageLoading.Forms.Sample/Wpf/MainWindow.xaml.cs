@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Xamarin.Forms.Platform.WPF;
 
-namespace Wpf
+namespace WPF
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
