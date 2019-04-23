@@ -17,6 +17,10 @@ using CoreGraphics;
 using Android.Util;
 using Android.Runtime;
 using Android.Content;
+#elif UWP
+using Windows.UI.Xaml;
+#elif WPF
+using System.Windows;
 #endif
 
 namespace FFImageLoading.Cross
@@ -98,7 +102,7 @@ namespace FFImageLoading.Cross
 
 #if __WINDOWS__
         public Dictionary<string, string> ReplaceStringMap { get { return (Dictionary<string, string>)GetValue(ReplaceStringMapProperty); } set { SetValue(ReplaceStringMapProperty, value); } }
-        public static readonly Windows.UI.Xaml.DependencyProperty ReplaceStringMapProperty = Windows.UI.Xaml.DependencyProperty.Register(nameof(ReplaceStringMap), typeof(Dictionary<string, string>), typeof(MvxCachedImageView), new Windows.UI.Xaml.PropertyMetadata(default(Dictionary<string, string>), OnImageChanged));
+        public static readonly DependencyProperty ReplaceStringMapProperty = DependencyProperty.Register(nameof(ReplaceStringMap), typeof(Dictionary<string, string>), typeof(MvxCachedImageView), new PropertyMetadata(default(Dictionary<string, string>), OnImageChanged));
 #else
         Dictionary<string, string> _replaceStringMap;
         /// <summary>

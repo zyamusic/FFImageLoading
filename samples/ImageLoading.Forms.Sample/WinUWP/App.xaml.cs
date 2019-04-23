@@ -62,7 +62,7 @@ namespace WinUWP
                 FFImageLoading.ImageService.Instance.Initialize(config);
 
                 List<Assembly> assembliesToInclude = new List<Assembly>();
-                assembliesToInclude.Add(typeof(FFImageLoading.Forms.WinUWP.CachedImageRenderer).GetTypeInfo().Assembly);
+                assembliesToInclude.Add(typeof(FFImageLoading.Forms.Platform.CachedImageRenderer).GetTypeInfo().Assembly);
                 Xamarin.Forms.Forms.Init(e, assembliesToInclude);
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)

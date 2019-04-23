@@ -69,6 +69,9 @@
     <Compile Include="..\FFImageLoading.Windows\Helpers\ColorHolder.cs">
       <Link>Helpers\ColorHolder.cs</Link>
     </Compile>
+    <Compile Include="..\FFImageLoading.Windows\Views\MvxCachedImageView.cs">
+      <Link>Views\MvxCachedImageView.cs</Link>
+    </Compile>
     <Compile Include="Cache\IImageCache.cs" />
     <Compile Include="Cache\ImageCache.cs" />
     <Compile Include="Cache\WriteableBitmapLRUCache.cs" />
@@ -95,9 +98,7 @@
       <Name>FFImageLoading</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <PackageReference Include="WriteableBitmapEx">
       <Version>1.6.2</Version>

@@ -144,6 +144,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFImageLoading.Svg.Forms.WP
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		source\FFImageLoading.Svg.Forms.Shared\FFImageLoading.Svg.Forms.Shared.projitems*{0e418be1-757c-41e1-97a8-bc9d28ab7eea}*SharedItemsImports = 4
 		source\FFImageLoading.Cross\FFImageLoading.Cross.projitems*{1597f7d4-432c-4f26-b508-0f6faf0b9711}*SharedItemsImports = 4
 		source\FFImageLoading.Shared\FFImageLoading.Shared.projitems*{1597f7d4-432c-4f26-b508-0f6faf0b9711}*SharedItemsImports = 4
 		source\FFImageLoading.Shared.IosMac\FFImageLoading.Shared.IosMac.projitems*{26f4db3b-ec7f-46de-8d51-2cb4ba187a16}*SharedItemsImports = 13
@@ -155,6 +156,7 @@ Global
 		source\FFImageLoading.Svg.Forms.Shared\FFImageLoading.Svg.Forms.Shared.projitems*{6d4f9dfa-012e-4966-a6e8-01c3464b537e}*SharedItemsImports = 4
 		source\FFImageLoading.Cross\FFImageLoading.Cross.projitems*{74bf9402-3e13-4003-8923-bc20a1294ce2}*SharedItemsImports = 4
 		source\FFImageLoading.Shared\FFImageLoading.Shared.projitems*{74bf9402-3e13-4003-8923-bc20a1294ce2}*SharedItemsImports = 4
+		source\FFImageLoading.Svg.Shared\FFImageLoading.Svg.Shared.projitems*{94e60383-6066-43b5-b0cd-007495588b1b}*SharedItemsImports = 4
 		source\FFImageLoading.Shared\FFImageLoading.Shared.projitems*{dc06c582-6c7e-4018-a752-feb528c65f7e}*SharedItemsImports = 4
 		source\FFImageLoading.Shared\FFImageLoading.Shared.projitems*{e72ac4ed-03a8-465c-95a2-38b0544b37db}*SharedItemsImports = 13
 	EndGlobalSection

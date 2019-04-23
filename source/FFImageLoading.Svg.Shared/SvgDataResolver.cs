@@ -26,7 +26,7 @@ using Android.Runtime;
 using Android.Content;
 using Android.Graphics;
 using FFImageLoading.Drawables;
-#elif __WINDOWS__
+#elif UWP
 using Windows.Foundation;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;

@@ -1,21 +1,28 @@
 ﻿using System;
 using System.Windows;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using FFImageLoading.Args;
 using FFImageLoading.Cache;
 using FFImageLoading.Work;
-using Windows.UI.Xaml.Controls;
 using System.ComponentModel;
-using Windows.UI.Xaml;
 using System.IO;
 using System.Threading;
+using ErrorEventArgs = FFImageLoading.Args.ErrorEventArgs;
+using ImageSource = FFImageLoading.Work.ImageSource;
+#if UWP
+using Stretch = Windows.UI.Xaml.Media.Stretch;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+#elif WPF
+using System.Windows.Controls;
+using Stretch = System.Windows.Media.Stretch;
+#endif
+
 
 namespace FFImageLoading.Views
 {
-    public class MvxCachedImageView : ContentControl, ICachedImageView, IDisposable
+	public class MvxCachedImageView : ContentControl, ICachedImageView, IDisposable
     {
         private Image _internalImage;
         protected IScheduledWork _scheduledWork;
@@ -44,19 +51,16 @@ namespace FFImageLoading.Views
         }
 
         public Image Image
-        {
-            get
-            {
-                return _internalImage;
-            }
-            set
-            {
-                _internalImage = value;
-                Content = _internalImage;
-            }
-        }
+		{
+			get => _internalImage;
+			set
+			{
+				_internalImage = value;
+				Content = _internalImage;
+			}
+		}
 
-        protected static void OnImageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		protected static void OnImageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var view = (MvxCachedImageView)d;
             if (view.IsInDesignMode)
@@ -76,10 +80,12 @@ namespace FFImageLoading.Views
                 view.UpdateImageLoadingTask();
             }
         }
-
-        bool IsInDesignMode => Windows.ApplicationModel.DesignMode.DesignModeEnabled;
-
-        public bool IsLoading { get { return (bool)GetValue(IsLoadingProperty); } set { SetValue(IsLoadingProperty, value); } }
+#if UWP
+		bool IsInDesignMode => Windows.ApplicationModel.DesignMode.DesignModeEnabled;
+#elif WPF
+		bool IsInDesignMode => DesignerProperties.GetIsInDesignMode(this);
+#endif
+		public bool IsLoading { get { return (bool)GetValue(IsLoadingProperty); } set { SetValue(IsLoadingProperty, value); } }
         public static readonly DependencyProperty IsLoadingProperty = DependencyProperty.Register(nameof(IsLoading), typeof(bool), typeof(MvxCachedImageView), new PropertyMetadata(default(bool)));
 
         public int RetryCount { get { return (int)GetValue(RetryCountProperty); } set { SetValue(RetryCountProperty, value); } }
@@ -151,11 +157,13 @@ namespace FFImageLoading.Views
         public Func<CancellationToken, Task<Stream>> ImageStream { get { return (Func<CancellationToken, Task<Stream>>)GetValue(ImageStreamProperty); } set { SetValue(ImageStreamProperty, value); } }
         public static readonly DependencyProperty ImageStreamProperty = DependencyProperty.Register(nameof(ImageStream), typeof(Func<CancellationToken, Task<Stream>>), typeof(MvxCachedImageView), new PropertyMetadata(default(Func<CancellationToken, Task<Stream>>), OnImageChanged));
 
-        public static readonly DependencyProperty StretchProperty = DependencyProperty.Register(nameof(Stretch), typeof(Windows.UI.Xaml.Media.Stretch), typeof(MvxCachedImageView), new PropertyMetadata(default(Windows.UI.Xaml.Media.Stretch), StretchPropertyChanged));
-        public Windows.UI.Xaml.Media.Stretch Stretch { get { return (Windows.UI.Xaml.Media.Stretch)GetValue(StretchProperty); } set { SetValue(StretchProperty, value); } }
+
+
+        public static readonly DependencyProperty StretchProperty = DependencyProperty.Register(nameof(Stretch), typeof(Stretch), typeof(MvxCachedImageView), new PropertyMetadata(default(Stretch), StretchPropertyChanged));
+        public Stretch Stretch { get { return (Stretch)GetValue(StretchProperty); } set { SetValue(StretchProperty, value); } }
         private static void StretchPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((MvxCachedImageView)d)._internalImage.Stretch = (Windows.UI.Xaml.Media.Stretch)e.NewValue;
+			((MvxCachedImageView)d)._internalImage.Stretch = (Stretch)e.NewValue;
         }
 
         public static readonly DependencyProperty HorizontalImageAlignmentProperty = DependencyProperty.Register(nameof(HorizontalImageAlignment), typeof(HorizontalAlignment), typeof(MvxCachedImageView), new PropertyMetadata(HorizontalAlignment.Stretch, HorizontalImageAlignmentPropertyChanged));
@@ -216,27 +224,27 @@ namespace FFImageLoading.Views
 
             IsLoading = true;
 
-            if (ffSource.ImageSource == FFImageLoading.Work.ImageSource.Url)
+            if (ffSource.ImageSource == ImageSource.Url)
             {
                 imageLoader = ImageService.Instance.LoadUrl(ffSource.Path, CacheDuration);
             }
-            else if (ffSource.ImageSource == FFImageLoading.Work.ImageSource.CompiledResource)
+            else if (ffSource.ImageSource == ImageSource.CompiledResource)
             {
                 imageLoader = ImageService.Instance.LoadCompiledResource(ffSource.Path);
             }
-            else if (ffSource.ImageSource == FFImageLoading.Work.ImageSource.ApplicationBundle)
+            else if (ffSource.ImageSource == ImageSource.ApplicationBundle)
             {
                 imageLoader = ImageService.Instance.LoadFileFromApplicationBundle(ffSource.Path);
             }
-            else if (ffSource.ImageSource == FFImageLoading.Work.ImageSource.Filepath)
+            else if (ffSource.ImageSource == ImageSource.Filepath)
             {
                 imageLoader = ImageService.Instance.LoadFile(ffSource.Path);
             }
-            else if (ffSource.ImageSource == FFImageLoading.Work.ImageSource.Stream)
+            else if (ffSource.ImageSource == ImageSource.Stream)
             {
                 imageLoader = ImageService.Instance.LoadStream(ffSource.Stream);
             }
-            else if (ffSource.ImageSource == FFImageLoading.Work.ImageSource.EmbeddedResource)
+            else if (ffSource.ImageSource == ImageSource.EmbeddedResource)
             {
                 imageLoader = ImageService.Instance.LoadEmbeddedResource(ffSource.Path);
             }
@@ -328,26 +336,26 @@ namespace FFImageLoading.Views
                 imageLoader.Finish((work) =>
                 {
                     IsLoading = false;
-                    OnFinish?.Invoke(this, new Args.FinishEventArgs(work));
+                    OnFinish?.Invoke(this, new FinishEventArgs(work));
                 });
 
                 imageLoader.Success((imageInformation, loadingResult) =>
                 {
-                    OnSuccess?.Invoke(this, new Args.SuccessEventArgs(imageInformation, loadingResult));
+                    OnSuccess?.Invoke(this, new SuccessEventArgs(imageInformation, loadingResult));
                     _lastImageSource = ffSource;
                 });
 
                 if (OnError != null)
-                    imageLoader.Error((ex) => OnError?.Invoke(this, new Args.ErrorEventArgs(ex)));
+                    imageLoader.Error((ex) => OnError?.Invoke(this, new ErrorEventArgs(ex)));
 
                 if (OnDownloadStarted != null)
-                    imageLoader.DownloadStarted((downloadInformation) => OnDownloadStarted(this, new Args.DownloadStartedEventArgs(downloadInformation)));
+                    imageLoader.DownloadStarted((downloadInformation) => OnDownloadStarted(this, new DownloadStartedEventArgs(downloadInformation)));
 
                 if (OnDownloadProgress != null)
-                    imageLoader.DownloadProgress((progress) => OnDownloadProgress(this, new Args.DownloadProgressEventArgs(progress)));
+                    imageLoader.DownloadProgress((progress) => OnDownloadProgress(this, new DownloadProgressEventArgs(progress)));
 
                 if (OnFileWriteFinished != null)
-                    imageLoader.FileWriteFinished((info) => OnFileWriteFinished(this, new Args.FileWriteFinishedEventArgs(info)));
+                    imageLoader.FileWriteFinished((info) => OnFileWriteFinished(this, new FileWriteFinishedEventArgs(info)));
 
                 if (!string.IsNullOrWhiteSpace(CustomCacheKey))
                     imageLoader.CacheKey(CustomCacheKey);
@@ -364,7 +372,7 @@ namespace FFImageLoading.Views
         /// eg. custom cache keys, svg data resolvers, etc
         /// </summary>
         /// <param name="imageLoader">Image loader.</param>
-        protected virtual void SetupOnBeforeImageLoading(Work.TaskParameter imageLoader)
+        protected virtual void SetupOnBeforeImageLoading(TaskParameter imageLoader)
         {
         }
 
@@ -387,22 +395,21 @@ namespace FFImageLoading.Views
                 return new ImageSourceBinding(ImageSource.Url, imagePath);
             }
 
-            Uri uri;
-            if (Uri.TryCreate(imagePath, UriKind.Absolute, out uri))
-            {
-                if (uri.Scheme == "file")
-                    return new ImageSourceBinding(ImageSource.Filepath, uri.LocalPath);
+			if (Uri.TryCreate(imagePath, UriKind.Absolute, out var uri))
+			{
+				if (uri.Scheme == "file")
+					return new ImageSourceBinding(ImageSource.Filepath, uri.LocalPath);
 
-                if (uri.Scheme == "resource")
-                    return new ImageSourceBinding(ImageSource.EmbeddedResource, imagePath);
+				if (uri.Scheme == "resource")
+					return new ImageSourceBinding(ImageSource.EmbeddedResource, imagePath);
 
-                if (uri.Scheme == "app")
-                    return new ImageSourceBinding(ImageSource.CompiledResource, uri.LocalPath);
+				if (uri.Scheme == "app")
+					return new ImageSourceBinding(ImageSource.CompiledResource, uri.LocalPath);
 
-                return new ImageSourceBinding(ImageSource.Url, imagePath);
-            }
+				return new ImageSourceBinding(ImageSource.Url, imagePath);
+			}
 
-            return new ImageSourceBinding(ImageSource.CompiledResource, imagePath);
+			return new ImageSourceBinding(ImageSource.CompiledResource, imagePath);
         }
 
         public virtual void Dispose()
