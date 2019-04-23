@@ -49,13 +49,15 @@ namespace FFImageLoading.Targets
                 // fade animation
                 int fadeDuration = parameters.FadeAnimationDuration.HasValue ?
                     parameters.FadeAnimationDuration.Value : ImageService.Instance.Config.FadeAnimationDuration;
-                DoubleAnimation fade = new DoubleAnimation();
-                fade.Duration = TimeSpan.FromMilliseconds(fadeDuration);
-                fade.From = 0f;
-                fade.To = 1f;
-                fade.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseInOut };
+				DoubleAnimation fade = new DoubleAnimation
+				{
+					Duration = TimeSpan.FromMilliseconds(fadeDuration),
+					From = 0f,
+					To = 1f,
+					EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseInOut }
+				};
 
-                Storyboard fadeInStoryboard = new Storyboard();
+				var fadeInStoryboard = new Storyboard();
                 Storyboard.SetTargetProperty(fade, new PropertyPath("Opacity"));
                 Storyboard.SetTarget(fade, control);
                 fadeInStoryboard.Children.Add(fade);
@@ -72,7 +74,7 @@ namespace FFImageLoading.Targets
             }
         }
 
-        bool IsLayoutNeeded(IImageLoaderTask task)
+		private bool IsLayoutNeeded(IImageLoaderTask task)
         {
             if (task.Parameters.InvalidateLayoutEnabled.HasValue)
             {
@@ -91,11 +93,10 @@ namespace FFImageLoading.Targets
         {
             get
             {
-                Image control;
-                if (!_controlWeakReference.TryGetTarget(out control))
-                    return null;
+				if (!_controlWeakReference.TryGetTarget(out var control))
+					return null;
 
-                if (control == null)
+				if (control == null)
                     return null;
 
                 return control;

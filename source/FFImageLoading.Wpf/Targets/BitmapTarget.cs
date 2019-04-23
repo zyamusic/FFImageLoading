@@ -26,9 +26,8 @@ namespace FFImageLoading.Targets
                 if (_imageWeakReference == null)
                     return null;
 
-                BitmapSource image = null;
-                _imageWeakReference.TryGetTarget(out image);
-                return image;
+				_imageWeakReference.TryGetTarget(out var image);
+				return image;
             }
         }
     }

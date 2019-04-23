@@ -31,15 +31,9 @@ namespace FFImageLoading.Cache
             _reusableBitmaps = new WriteableBitmapLRUCache(maxCacheSize);
         }
 
-        public static IImageCache Instance
-        {
-            get
-            {
-                return _instance ?? (_instance = new ImageCache(ImageService.Instance.Config.MaxMemoryCacheSize, ImageService.Instance.Config.Logger));
-            }
-        }
+		public static IImageCache Instance => _instance ?? (_instance = new ImageCache(ImageService.Instance.Config.MaxMemoryCacheSize, ImageService.Instance.Config.Logger));
 
-        public void Add(string key, ImageInformation imageInformation, BitmapSource bitmap)
+		public void Add(string key, ImageInformation imageInformation, BitmapSource bitmap)
         {
             if (string.IsNullOrWhiteSpace(key) || bitmap == null)
                 return;
@@ -49,13 +43,12 @@ namespace FFImageLoading.Cache
 
         public ImageInformation GetInfo(string key)
         {
-            Tuple<BitmapSource, ImageInformation> cacheEntry;
-            if (_reusableBitmaps.TryGetValue (key, out cacheEntry))
-            {
-                return cacheEntry.Item2;
-            }
+			if (_reusableBitmaps.TryGetValue(key, out var cacheEntry))
+			{
+				return cacheEntry.Item2;
+			}
 
-            return null;
+			return null;
         }
 
         public Tuple<BitmapSource, ImageInformation> Get(string key)
@@ -63,14 +56,12 @@ namespace FFImageLoading.Cache
             if (string.IsNullOrWhiteSpace(key))
                 return null;
 
-            Tuple<BitmapSource, ImageInformation> cacheEntry;
+			if (_reusableBitmaps.TryGetValue(key, out var cacheEntry) && cacheEntry.Item1 != null)
+			{
+				return new Tuple<BitmapSource, ImageInformation>(cacheEntry.Item1, cacheEntry.Item2);
+			}
 
-            if (_reusableBitmaps.TryGetValue(key, out cacheEntry) && cacheEntry.Item1 != null)
-            {
-                return new Tuple<BitmapSource, ImageInformation>(cacheEntry.Item1, cacheEntry.Item2);
-            }
-
-            return null;
+			return null;
         }
 
         public void Clear()

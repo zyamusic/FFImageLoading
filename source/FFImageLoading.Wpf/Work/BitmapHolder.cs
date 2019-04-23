@@ -29,9 +29,9 @@ namespace FFImageLoading.Work
 
         public byte[] PixelData { get; private set; }
 
-        public int PixelCount { get { return (int)(PixelData.Length / 4); } }
+		public int PixelCount => PixelData.Length / 4;
 
-        public void SetPixel(int x, int y, ColorHolder color)
+		public void SetPixel(int x, int y, ColorHolder color)
         {
             int pixelPos = (y * Width + x);
             SetPixel(pixelPos, color);
@@ -39,19 +39,12 @@ namespace FFImageLoading.Work
 
         public void SetPixel(int pos, ColorHolder color)
         {
-            try
-            {
-                int bytePos = pos * 4;
-                PixelData[bytePos] = color.B;
-                PixelData[bytePos + 1] = color.G;
-                PixelData[bytePos + 2] = color.R;
-                PixelData[bytePos + 3] = color.A;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			int bytePos = pos * 4;
+			PixelData[bytePos] = color.B;
+			PixelData[bytePos + 1] = color.G;
+			PixelData[bytePos + 2] = color.R;
+			PixelData[bytePos + 3] = color.A;
+		}
 
         public ColorHolder GetPixel(int pos)
         {

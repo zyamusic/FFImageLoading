@@ -1,11 +1,5 @@
-﻿#if SILVERLIGHT
-using FFImageLoading.Concurrency;
-using System.Windows.Media.Imaging;
-#else
-using Windows.UI.Xaml.Media.Imaging;
+﻿using Windows.UI.Xaml.Media.Imaging;
 using Windows.Security.ExchangeActiveSyncProvisioning;
-#endif
-
 using System;
 using FFImageLoading.Work;
 using FFImageLoading.Helpers;
@@ -56,13 +50,12 @@ namespace FFImageLoading.Cache
 
         public ImageInformation GetInfo(string key)
         {
-            Tuple<BitmapSource, ImageInformation> cacheEntry;
-            if (_reusableBitmaps.TryGetValue (key, out cacheEntry))
-            {
-                return cacheEntry.Item2;
-            }
+			if (_reusableBitmaps.TryGetValue(key, out var cacheEntry))
+			{
+				return cacheEntry.Item2;
+			}
 
-            return null;
+			return null;
         }
 
         public Tuple<BitmapSource, ImageInformation> Get(string key)
@@ -70,14 +63,12 @@ namespace FFImageLoading.Cache
             if (string.IsNullOrWhiteSpace(key))
                 return null;
 
-            Tuple<BitmapSource, ImageInformation> cacheEntry;
+			if (_reusableBitmaps.TryGetValue(key, out var cacheEntry) && cacheEntry.Item1 != null)
+			{
+				return new Tuple<BitmapSource, ImageInformation>(cacheEntry.Item1, cacheEntry.Item2);
+			}
 
-            if (_reusableBitmaps.TryGetValue(key, out cacheEntry) && cacheEntry.Item1 != null)
-            {
-                return new Tuple<BitmapSource, ImageInformation>(cacheEntry.Item1, cacheEntry.Item2);
-            }
-
-            return null;
+			return null;
         }
 
         public void Clear()

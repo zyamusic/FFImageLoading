@@ -46,16 +46,9 @@ namespace FFImageLoading.Extensions
         }
         public static Task<WriteableBitmap> ToWriteableBitmap(this Stream holder)
         {
-			try
-			{
-				holder.Seek(0, SeekOrigin.Begin);
-				return Task.FromResult(BitmapFactory.FromStream(holder));
-			}
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
+			holder.Seek(0, SeekOrigin.Begin);
+			return Task.FromResult(BitmapFactory.FromStream(holder));
+		}
 		
         public async static Task<WriteableBitmap> ToBitmapImageAsync(this Stream imageStream, Tuple<int, int> downscale, bool downscaleDipUnits, InterpolationMode mode, bool allowUpscale, ImageInformation imageInformation = null)
         {

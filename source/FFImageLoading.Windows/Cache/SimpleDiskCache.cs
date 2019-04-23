@@ -1,36 +1,28 @@
 ﻿using System;
-using System.Text;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.IO;
-using FFImageLoading.Cache;
 using Windows.Storage;
 using System.Runtime.InteropServices.WindowsRuntime;
 using FFImageLoading.Config;
 using FFImageLoading.Helpers;
-
-#if SILVERLIGHT
-using FFImageLoading.Concurrency;
-#else
 using System.Collections.Concurrent;
-#endif
-
 
 namespace FFImageLoading.Cache
 {
-    public class SimpleDiskCache : IDiskCache
+	public class SimpleDiskCache : IDiskCache
     {
-        readonly SemaphoreSlim fileWriteLock = new SemaphoreSlim(1, 1);
+        readonly SemaphoreSlim _fileWriteLock = new SemaphoreSlim(1, 1);
         readonly SemaphoreSlim _currentWriteLock = new SemaphoreSlim(1, 1);
-        Task initTask = null;
-        string cacheFolderName;
-        StorageFolder rootFolder;
-        StorageFolder cacheFolder;
-        ConcurrentDictionary<string, byte> fileWritePendingTasks = new ConcurrentDictionary<string, byte>();
-        ConcurrentDictionary<string, CacheEntry> entries = new ConcurrentDictionary<string, CacheEntry>();
-        Task _currentWrite = Task.FromResult<byte>(1);
+		private Task _initTask = null;
+		private readonly string _cacheFolderName;
+		private StorageFolder _rootFolder;
+		private StorageFolder _cacheFolder;
+		private readonly ConcurrentDictionary<string, byte> _fileWritePendingTasks = new ConcurrentDictionary<string, byte>();
+		private readonly ConcurrentDictionary<string, CacheEntry> _entries = new ConcurrentDictionary<string, CacheEntry>();
+		private Task _currentWrite = Task.FromResult<byte>(1);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleDiskCache"/> class. This constructor attempts
@@ -41,8 +33,8 @@ namespace FFImageLoading.Cache
         public SimpleDiskCache(string cacheFolderName, Configuration configuration)
         {
             Configuration = configuration;
-            this.cacheFolderName = cacheFolderName;
-            initTask = Init();
+            this._cacheFolderName = cacheFolderName;
+            _initTask = Init();
         }
 
         /// <summary>
@@ -55,9 +47,9 @@ namespace FFImageLoading.Cache
         public SimpleDiskCache(StorageFolder rootFolder, string cacheFolderName, Configuration configuration)
         {
             Configuration = configuration;
-            this.rootFolder = rootFolder ?? ApplicationData.Current.TemporaryFolder;
-            this.cacheFolderName = cacheFolderName;
-            initTask = Init();
+            this._rootFolder = rootFolder ?? ApplicationData.Current.TemporaryFolder;
+            this._cacheFolderName = cacheFolderName;
+            _initTask = Init();
         }
 
         protected Configuration Configuration { get; private set; }
@@ -67,7 +59,7 @@ namespace FFImageLoading.Cache
         {
             try
             {
-                cacheFolder = await rootFolder.CreateFolderAsync(cacheFolderName, CreationCollisionOption.OpenIfExists);
+                _cacheFolder = await _rootFolder.CreateFolderAsync(_cacheFolderName, CreationCollisionOption.OpenIfExists);
                 await InitializeEntries().ConfigureAwait(false);
             }
             catch
@@ -76,7 +68,7 @@ namespace FFImageLoading.Cache
 
                 try
                 {
-                    folder = await ApplicationData.Current.LocalFolder.GetFolderAsync(cacheFolderName);
+                    folder = await ApplicationData.Current.LocalFolder.GetFolderAsync(_cacheFolderName);
                 }
                 catch (Exception)
                 {
@@ -85,7 +77,7 @@ namespace FFImageLoading.Cache
                 if (folder != null)
                 {
                     await folder.DeleteAsync();
-                    await ApplicationData.Current.LocalFolder.CreateFolderAsync(cacheFolderName, CreationCollisionOption.ReplaceExisting);
+                    await ApplicationData.Current.LocalFolder.CreateFolderAsync(_cacheFolderName, CreationCollisionOption.ReplaceExisting);
                 }
             }
             finally
@@ -96,11 +88,11 @@ namespace FFImageLoading.Cache
 
         protected virtual async Task InitializeEntries()
         {
-            foreach (var file in await cacheFolder.GetFilesAsync())
+            foreach (var file in await _cacheFolder.GetFilesAsync())
             {
                 string key = Path.GetFileNameWithoutExtension(file.Name);
                 var duration = GetDuration(file.FileType);
-                entries.TryAdd(key, new CacheEntry(file.DateCreated.UtcDateTime, duration, file.Name));
+                _entries.TryAdd(key, new CacheEntry(file.DateCreated.UtcDateTime, duration, file.Name));
             }
         }
 
@@ -118,17 +110,17 @@ namespace FFImageLoading.Cache
         {
             KeyValuePair<string, CacheEntry>[] kvps;
             var now = DateTime.UtcNow;
-            kvps = entries.Where(kvp => kvp.Value.Origin + kvp.Value.TimeToLive < now).ToArray();
+            kvps = _entries.Where(kvp => kvp.Value.Origin + kvp.Value.TimeToLive < now).ToArray();
 
             foreach (var kvp in kvps)
             {
                 CacheEntry oldCacheEntry;
-                if (entries.TryRemove(kvp.Key, out oldCacheEntry))
+                if (_entries.TryRemove(kvp.Key, out oldCacheEntry))
                 {
                     try
                     {
                         Logger.Debug(string.Format("SimpleDiskCache: Removing expired file {0}", oldCacheEntry.FileName));
-                        var file = await cacheFolder.GetFileAsync(oldCacheEntry.FileName);
+                        var file = await _cacheFolder.GetFileAsync(oldCacheEntry.FileName);
                         await file.DeleteAsync();
                     }
                     catch
@@ -145,13 +137,13 @@ namespace FFImageLoading.Cache
         /// <returns></returns>
         public virtual async Task<string> GetFilePathAsync(string key)
         {
-            await initTask.ConfigureAwait(false);
+            await _initTask.ConfigureAwait(false);
 
             CacheEntry entry;
-            if (!entries.TryGetValue(key, out entry))
+            if (!_entries.TryGetValue(key, out entry))
                 return null;
 
-            return Path.Combine(cacheFolder.Path, entry.FileName);
+            return Path.Combine(_cacheFolder.Path, entry.FileName);
         }
 
         /// <summary>
@@ -161,9 +153,9 @@ namespace FFImageLoading.Cache
         /// <param name="key">Key.</param>
         public virtual async Task<bool> ExistsAsync(string key)
         {
-            await initTask.ConfigureAwait(false);
+            await _initTask.ConfigureAwait(false);
 
-            return entries.ContainsKey(key);
+            return _entries.ContainsKey(key);
         }
 
         /// <summary>
@@ -174,9 +166,9 @@ namespace FFImageLoading.Cache
         /// <param name="duration">Duration.</param>
         public virtual async Task AddToSavingQueueIfNotExistsAsync(string key, byte[] bytes, TimeSpan duration, Action writeFinished = null)
         {
-            await initTask.ConfigureAwait(false);
+            await _initTask.ConfigureAwait(false);
 
-            if (!fileWritePendingTasks.TryAdd(key, 1))
+            if (!_fileWritePendingTasks.TryAdd(key, 1))
                 return;
 
             await _currentWriteLock.WaitAsync().ConfigureAwait(false); // Make sure we don't add multiple continuations to the same task
@@ -187,23 +179,23 @@ namespace FFImageLoading.Cache
                 {
                     await Task.Yield(); // forces it to be scheduled for later
 
-                    await initTask.ConfigureAwait(false);
+                    await _initTask.ConfigureAwait(false);
 
                     try
                     {
-                        await fileWriteLock.WaitAsync().ConfigureAwait(false);
+                        await _fileWriteLock.WaitAsync().ConfigureAwait(false);
 
-                        cacheFolder = await rootFolder.CreateFolderAsync(cacheFolderName, CreationCollisionOption.OpenIfExists);
+                        _cacheFolder = await _rootFolder.CreateFolderAsync(_cacheFolderName, CreationCollisionOption.OpenIfExists);
                         string filename = key + "." + (long)duration.TotalSeconds;
 
-                        var file = await cacheFolder.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
+                        var file = await _cacheFolder.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
 
                         using (var fs = await file.OpenStreamForWriteAsync().ConfigureAwait(false))
                         {
                             await fs.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
                         }
 
-                        entries[key] = new CacheEntry(DateTime.UtcNow, duration, filename);
+                        _entries[key] = new CacheEntry(DateTime.UtcNow, duration, filename);
                         writeFinished?.Invoke();
                     }
                     catch (Exception ex) // Since we don't observe the task (it's not awaited, we should catch all exceptions)
@@ -215,8 +207,8 @@ namespace FFImageLoading.Cache
                     finally
                     {
                         byte finishedTask;
-                        fileWritePendingTasks.TryRemove(key, out finishedTask);
-                        fileWriteLock.Release();
+                        _fileWritePendingTasks.TryRemove(key, out finishedTask);
+                        _fileWriteLock.Release();
                     }
                 });
             }
@@ -233,25 +225,25 @@ namespace FFImageLoading.Cache
         /// <param name="key">Key.</param>
         public virtual async Task<Stream> TryGetStreamAsync(string key)
         {
-            await initTask.ConfigureAwait(false);
+            await _initTask.ConfigureAwait(false);
 
             await WaitForPendingWriteIfExists(key).ConfigureAwait(false);
 
             try
             {
                 CacheEntry entry;
-                if (!entries.TryGetValue(key, out entry))
+                if (!_entries.TryGetValue(key, out entry))
                     return null;
 
                 StorageFile file = null;
 
                 try
                 {
-                    file = await cacheFolder.GetFileAsync(entry.FileName);
+                    file = await _cacheFolder.GetFileAsync(entry.FileName);
                 }
                 catch (IOException)
                 {
-                    cacheFolder = await rootFolder.CreateFolderAsync(cacheFolderName, CreationCollisionOption.OpenIfExists);
+                    _cacheFolder = await _rootFolder.CreateFolderAsync(_cacheFolderName, CreationCollisionOption.OpenIfExists);
                 }
 
                 if (file == null)
@@ -271,41 +263,40 @@ namespace FFImageLoading.Cache
         /// <param name="key">Key.</param>
         public virtual async Task RemoveAsync(string key)
         {
-            await initTask.ConfigureAwait(false);
+            await _initTask.ConfigureAwait(false);
 
             await WaitForPendingWriteIfExists(key).ConfigureAwait(false);
 
-            CacheEntry oldCacheEntry;
-            if (entries.TryRemove(key, out oldCacheEntry))
-            {
-                try
-                {
-                    var file = await cacheFolder.GetFileAsync(oldCacheEntry.FileName);
-                    await file.DeleteAsync();
-                }
-                catch
-                {
-                }
-            }
-        }
+			if (_entries.TryRemove(key, out var oldCacheEntry))
+			{
+				try
+				{
+					var file = await _cacheFolder.GetFileAsync(oldCacheEntry.FileName);
+					await file.DeleteAsync();
+				}
+				catch
+				{
+				}
+			}
+		}
 
         /// <summary>
         /// Clears all cache entries.
         /// </summary>
         public virtual async Task ClearAsync()
         {
-            await initTask.ConfigureAwait(false);
+            await _initTask.ConfigureAwait(false);
 
-            while (fileWritePendingTasks.Count != 0)
+            while (_fileWritePendingTasks.Count != 0)
             {
                 await Task.Delay(20).ConfigureAwait(false);
             }
 
             try
             {
-                await fileWriteLock.WaitAsync().ConfigureAwait(false);
+                await _fileWriteLock.WaitAsync().ConfigureAwait(false);
 
-                var entriesToRemove = await cacheFolder.GetFilesAsync();
+                var entriesToRemove = await _cacheFolder.GetFilesAsync();
                 foreach (var item in entriesToRemove)
                 {
                     try
@@ -319,18 +310,18 @@ namespace FFImageLoading.Cache
             }
             catch (IOException)
             {
-                cacheFolder = await rootFolder.CreateFolderAsync(cacheFolderName, CreationCollisionOption.OpenIfExists);
+                _cacheFolder = await _rootFolder.CreateFolderAsync(_cacheFolderName, CreationCollisionOption.OpenIfExists);
             }
             finally
             {
-                entries.Clear();
-                fileWriteLock.Release();
+                _entries.Clear();
+                _fileWriteLock.Release();
             }
         }
 
         protected virtual async Task WaitForPendingWriteIfExists(string key)
         {
-            while (fileWritePendingTasks.ContainsKey(key))
+            while (_fileWritePendingTasks.ContainsKey(key))
             {
                 await Task.Delay(20).ConfigureAwait(false);
             }

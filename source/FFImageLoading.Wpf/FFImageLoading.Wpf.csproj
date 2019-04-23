@@ -18,7 +18,7 @@
     <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WINDOWS;__WINDOWS__;WPF;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -29,11 +29,12 @@
     <DebugType>portable</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
-    <DocumentationFile>bin\Release\FFImageLoading.Platform.xml</DocumentationFile>    
+    <DocumentationFile>bin\Release\FFImageLoading.Platform.xml</DocumentationFile>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>Latest</LangVersion>
+    <DefineConstants>WINDOWS;__WINDOWS__;WPF;</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -50,23 +51,33 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\ffimageloading.mock\extensions\TaskParameterExtensions.cs">
+    <Compile Include="..\FFImageLoading.Mock\Extensions\TaskParameterExtensions.cs">
       <Link>Extensions\TaskParameterExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\FFImageLoading.Windows\Cache\LRUCache.cs">
+      <Link>Cache\LRUCache.cs</Link>
+    </Compile>
+    <Compile Include="..\FFImageLoading.Windows\Extensions\ColorExtensions.cs">
+      <Link>Extensions\ColorExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\FFImageLoading.Windows\Extensions\TaskParameterPlatformExtensions.cs">
+      <Link>Extensions\TaskParameterPlatformExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\FFImageLoading.Windows\Extensions\UnitsExtensions.cs">
+      <Link>Extensions\UnitsExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\FFImageLoading.Windows\Helpers\ColorHolder.cs">
+      <Link>Helpers\ColorHolder.cs</Link>
     </Compile>
     <Compile Include="Cache\IImageCache.cs" />
     <Compile Include="Cache\ImageCache.cs" />
-    <Compile Include="Cache\LRUCache.cs" />
     <Compile Include="Cache\WriteableBitmapLRUCache.cs" />
     <Compile Include="DataResolvers\DataResolverFactory.cs" />
     <Compile Include="DataResolvers\FileDataResolver.cs" />
     <Compile Include="DataResolvers\ResourceDataResolver.cs" />
     <Compile Include="Decoders\BaseDecoder.cs" />
-    <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\ImageExtensions.cs" />
-    <Compile Include="Extensions\TaskParameterPlatformExtensions.cs" />
-    <Compile Include="Extensions\UnitsExtensions.cs" />
     <Compile Include="Extensions\WriteableBitmapExtensions.cs" />
-    <Compile Include="Helpers\ColorHolder.cs" />
     <Compile Include="Helpers\MainThreadDispatcher.cs" />
     <Compile Include="Helpers\PlatformPerformance.cs" />
     <Compile Include="Helpers\ScaleHelper.cs" />

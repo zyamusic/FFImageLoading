@@ -1,6 +1,5 @@
 ﻿using FFImageLoading.Helpers;
 using System;
-using Windows.UI;
 
 namespace FFImageLoading.Extensions
 {

@@ -2,9 +2,14 @@
 using System.Threading.Tasks;
 using FFImageLoading.Work;
 using System.IO;
+#if UWP
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+#elif WPF
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+#endif
 using FFImageLoading.Targets;
 using FFImageLoading.Extensions;
 using ImageSource = FFImageLoading.Work.ImageSource;

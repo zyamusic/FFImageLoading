@@ -42,7 +42,7 @@ namespace FFImageLoading
 	    /// </summary>
 	    public static bool EnableMockImageService { get; set; }
 
-		protected override void PlatformSpecificConfiguration(Config.Configuration configuration)
+		protected override void PlatformSpecificConfiguration(Configuration configuration)
         {
             base.PlatformSpecificConfiguration(configuration);
 
@@ -61,7 +61,7 @@ namespace FFImageLoading
 		{
 			if (string.IsNullOrWhiteSpace(configuration.DiskCachePath))
 			{
-				var data = Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
+				var data = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 				//todo include app name
 				var cachePath = Path.Combine(data, "FFSimpleDiskCache");
 

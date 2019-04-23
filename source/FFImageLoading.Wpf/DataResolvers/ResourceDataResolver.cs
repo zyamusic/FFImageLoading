@@ -24,7 +24,7 @@ namespace FFImageLoading.DataResolvers
             Uri imgUri=null;
             try
             {
-                string resPath = identifier.TrimStart('\\', '/');
+                var resPath = identifier.TrimStart('\\', '/');
 
                 if (!resPath.StartsWith(@"Assets\", StringComparison.OrdinalIgnoreCase) && !resPath.StartsWith("Assets/", StringComparison.OrdinalIgnoreCase))
                 {

@@ -1,13 +1,10 @@
 ﻿using FFImageLoading.Work;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+
 namespace FFImageLoading.Cache
 {
-    public class WriteableBitmapLRUCache : LRUCache<string, Tuple<BitmapSource, ImageInformation>>
+	public class WriteableBitmapLRUCache : LRUCache<string, Tuple<BitmapSource, ImageInformation>>
     {
         public WriteableBitmapLRUCache(int capacity) : base(capacity)
         {

@@ -21,10 +21,11 @@ namespace WPF
 
 			var config = new FFImageLoading.Config.Configuration()
 			{
-				VerboseLogging = true,
-				VerbosePerformanceLogging = true,
-				VerboseMemoryCacheLogging = true,
-				VerboseLoadingCancelledLogging = true,
+				VerboseLogging = false,
+				VerbosePerformanceLogging = false,
+				VerboseMemoryCacheLogging = false,
+				VerboseLoadingCancelledLogging = false,
+				HttpHeadersTimeout = 5
 			};
 			FFImageLoading.ImageService.Instance.Initialize(config);
 			List<Assembly> assembliesToInclude = new List<Assembly>();
