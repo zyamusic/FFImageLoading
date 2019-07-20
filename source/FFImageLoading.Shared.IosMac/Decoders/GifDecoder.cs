@@ -44,6 +44,12 @@ namespace FFImageLoading.Decoders
             {
                 var result = await SourceRegfToDecodedImageAsync(nsdata, new CGSize(downsampleWidth, downsampleHeight), ScaleHelper.Scale,
                                                       Configuration, parameters, RCTResizeMode.ScaleAspectFill, imageInformation, allowUpscale).ConfigureAwait(false);
+
+				if ((result.AnimatedImages == null || result.AnimatedImages.Length == 0) && result.Image == null)
+				{
+					System.Console.WriteLine("FFImageLoading GifDecoder null: " + path);
+				}
+
 				return result;
             }
         }
@@ -180,7 +186,7 @@ namespace FFImageLoading.Decoders
                         imageinformation.SetCurrentSize(width.DpToPixels(), height.DpToPixels());
                     }
                 }
-                else
+                else if (image != null)
                 {
                     result.Image = image;
 
@@ -191,6 +197,10 @@ namespace FFImageLoading.Decoders
                         imageinformation.SetCurrentSize(width.DpToPixels(), height.DpToPixels());
                     }
                 }
+				else
+				{
+					
+				}
 
                 return result;
             }
